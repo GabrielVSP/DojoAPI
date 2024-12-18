@@ -9,7 +9,11 @@ export async function GET( req: Request) {
 
         const book = url.searchParams.get('book')
 
-        const chapters = await prismadb.chapter.findMany()
+        const chapters = await prismadb.chapter.findMany({
+            where: {
+                bookId:  book ? {contains: book, mode: 'insensitive'} : {},
+            }
+        })
 
         return NextResponse.json(chapters)
 

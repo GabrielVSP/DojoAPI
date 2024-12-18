@@ -14,6 +14,9 @@ export async function GET( req: Request) {
             where: {
                 author: authorParam ? {contains: authorParam, mode: 'insensitive'} : {},
                 genre: genreParam ? {contains: genreParam, mode: 'insensitive'} : {}
+            },
+            include: {
+                chapter: true
             }
         })
 
