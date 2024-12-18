@@ -12,5 +12,16 @@ model Book {
   title      String
   author     String
   genre      String
-  created_At DateTime @default(now())
+  chapter    Chapter[]  @relation("BookToChapter")
+  created_At DateTime   @default(now())
 }
+
+model Chapter {
+  id         String     @id @default(uuid())
+  title      String
+  content    String
+  bookId     String
+  book       Book       @relation("BookToChapter", fields: [bookId], references: [id])
+  created_At DateTime   @default(now())
+}
+
