@@ -19,7 +19,7 @@ export async function GET( req: Request, { params }: { params: {bookId: string}}
                 genre: genreParam ? {contains: genreParam, mode: 'insensitive'} : {}
             },
             include: {
-                chapter: true
+                chapters: true
             }
         })
 
