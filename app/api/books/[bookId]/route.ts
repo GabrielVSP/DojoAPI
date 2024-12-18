@@ -7,9 +7,16 @@ export async function GET( req: Request, { params }: { params: {bookId: string}}
 
         if (!params.bookId) return new NextResponse("ID inválido", { status: 400 })
 
+        const url = new URL(req.url)
+
+        const authorParam = url.searchParams.get('author')
+        const genreParam = url.searchParams.get('genre')
+
         const book = await prismadb.book.findUnique({
             where: {
-                id: params.bookId
+                id: params.bookId,
+                author: authorParam ? {contains: authorParam, mode: 'insensitive'} : {},
+                genre: genreParam ? {contains: genreParam, mode: 'insensitive'} : {}
             }
         })
 
