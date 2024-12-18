@@ -32,6 +32,6 @@ model User {
   email      String
   password   String
   subscriptions Book[]  @relation("UserToBook")
-  authenticated Boolean
+  token      String
   created_At DateTime   @default(now())
 }

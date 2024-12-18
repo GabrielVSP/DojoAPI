@@ -12,11 +12,13 @@ export async function GET( req: Request, { params }: { params: {bookId: string}}
         const authorParam = url.searchParams.get('author')
         const genreParam = url.searchParams.get('genre')
 
-        const book = await prismadb.book.findUnique({
+        const book = await prismadb.book.findFirst({
             where: {
                 id: params.bookId,
-                author: authorParam ? {contains: authorParam, mode: 'insensitive'} : {},
-                genre: genreParam ? {contains: genreParam, mode: 'insensitive'} : {}
+                OR: [
+                    {author: authorParam ? {contains: authorParam, mode: 'insensitive'} : {}},
+                    {genre: genreParam ? {contains: genreParam, mode: 'insensitive'} : {}}
+                ]
             },
             include: {
                 chapters: true

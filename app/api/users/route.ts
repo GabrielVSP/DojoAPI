@@ -32,11 +32,14 @@ export async function POST( req: Request) {
 
         const userExists = await prismadb.user.findFirst({
             where: {
-                email
+                OR: [
+                    { email },
+                    { name }
+                ]
             }
         })
 
-        if(userExists) return new NextResponse("Um usuário com esse email já existe", { status: 400 })
+        if(userExists) return new NextResponse("Um usuário com esses dados já existe.", { status: 400 })
 
         const pass = await bcrypt.hash(password, bcrypt.genSaltSync(10))
 
@@ -46,7 +49,7 @@ export async function POST( req: Request) {
                 email,
                 password: pass,
                 subscriptions: {},
-                authenticated: false
+                token: ''
             }
         })
 

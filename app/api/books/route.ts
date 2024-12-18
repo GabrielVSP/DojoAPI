@@ -12,8 +12,10 @@ export async function GET( req: Request) {
 
         const books = await prismadb.book.findMany({
             where: {
-                author: authorParam ? {contains: authorParam, mode: 'insensitive'} : {},
-                genre: genreParam ? {contains: genreParam, mode: 'insensitive'} : {}
+                OR: [
+                    { author: authorParam ? {contains: authorParam, mode: 'insensitive'} : {} },
+                    { genre: genreParam ? {contains: genreParam, mode: 'insensitive'} : {} }
+                ]
             }
         })
 
