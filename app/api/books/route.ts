@@ -5,7 +5,17 @@ export async function GET( req: Request) {
     
     try {
 
-        const books = await prismadb.book.findMany()
+        const url = new URL(req.url)
+
+        const authorParam = url.searchParams.get('author')
+        const genreParam = url.searchParams.get('genre')
+
+        const books = await prismadb.book.findMany({
+            where: {
+                author: authorParam ? {contains: authorParam, mode: 'insensitive'} : {},
+                genre: genreParam ? {contains: genreParam, mode: 'insensitive'} : {}
+            }
+        })
 
         return NextResponse.json(books)
 
