@@ -24,6 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <title>Dojo Api</title>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
