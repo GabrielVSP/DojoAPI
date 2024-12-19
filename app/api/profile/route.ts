@@ -1,11 +1,10 @@
 import prismadb from "@/lib/prismadb";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 
 const key: string = process.env.JWT as string
 
-export async function GET( req: Request, { params }: { params: Promise<{ userEmail: string }> }) {
+export async function GET( req: Request) {
     
     try {
 

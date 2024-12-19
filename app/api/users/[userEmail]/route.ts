@@ -26,10 +26,8 @@ export async function GET( req: Request, { params }: { params: Promise<{ userEma
             }
         })
 
-        
-
         return NextResponse.json({
-            user,  
+            user 
         })
 
     } catch {
@@ -102,16 +100,8 @@ export async function PATCH( req: Request, { params }: { params: Promise<{ userE
         if(!userEmail) return new NextResponse("Email inválido.", { status: 400 })
         if(!auth) return new NextResponse("Token não fornecido", { status: 401 })
 
-        const user = await prismadb.user.findFirst({
-            where: {
-                email: userEmail
-            }
-        })
-
-        let verify
-
         try {
-            verify = jwt.verify(auth, key) as { userId: string }
+            jwt.verify(auth, key) as { userId: string }
         } catch {
             return new NextResponse("Usuário não autenticado no momento", { status: 400 })
         }
@@ -132,9 +122,9 @@ export async function PATCH( req: Request, { params }: { params: Promise<{ userE
 
         return NextResponse.json(patchedUser)
 
-    } catch (e: any) {
+    } catch {
 
-        return new NextResponse(e, { status: 500})
+        return new NextResponse("Internal error.", { status: 500})
 
     }
     
