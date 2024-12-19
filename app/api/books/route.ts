@@ -1,4 +1,5 @@
 import prismadb from "@/lib/prismadb";
+import { Prisma } from '@prisma/client';
 import { NextResponse } from "next/server";
 
 export async function GET( req: Request) {
@@ -10,14 +11,16 @@ export async function GET( req: Request) {
         const authorParam = url.searchParams.get('author')
         const genreParam = url.searchParams.get('genre')
 
+        const whereQuery: Prisma.BookWhereInput = {};
+
+        if (authorParam) whereQuery.author = { contains: authorParam, mode: 'insensitive' }
+
+        if (genreParam)  whereQuery.genre = { contains: genreParam, mode: 'insensitive' }
+    
+
         const books = await prismadb.book.findMany({
-            where: {
-                OR: [
-                    { author: authorParam ? {contains: authorParam, mode: 'insensitive'} : {} },
-                    { genre: genreParam ? {contains: genreParam, mode: 'insensitive'} : {} }
-                ]
-            }
-        })
+            where: Object.keys(whereQuery).length ? { OR: [whereQuery] } : {}
+        });
 
         return NextResponse.json(books)
 

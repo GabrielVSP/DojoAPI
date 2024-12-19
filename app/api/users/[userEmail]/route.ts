@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import prismadb from "@/lib/prismadb";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -43,9 +45,9 @@ export async function GET( req: Request, { params }: { params: Promise<{ userEma
             notifications: verify ? notifications.map((not) => (not.payload)) : ''
         })
 
-    } catch {
+    } catch (e: any) {
 
-        return new NextResponse("Erro interno", { status: 500})
+        return new NextResponse(e, { status: 500})
 
     }
 
