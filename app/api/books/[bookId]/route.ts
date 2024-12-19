@@ -1,11 +1,15 @@
 import prismadb from "@/lib/prismadb";
 import { NextResponse } from "next/server";
 
-export async function GET( req: Request, { params }: { params: {bookId: string}}) {
-    
+type RouteContext = { params: Promise<{ bookId: string }> }
+
+export async function GET( req: Request, { params }: RouteContext) {
+ 
     try {
 
-        if (!params.bookId) return new NextResponse("ID inválido", { status: 400 })
+        const { bookId } = await params
+
+        if (!bookId) return new NextResponse("ID inválido", { status: 400 })
 
         const url = new URL(req.url)
 
@@ -14,7 +18,7 @@ export async function GET( req: Request, { params }: { params: {bookId: string}}
 
         const book = await prismadb.book.findFirst({
             where: {
-                id: params.bookId,
+                id: bookId,
                 OR: [
                     {author: authorParam ? {contains: authorParam, mode: 'insensitive'} : {}},
                     {genre: genreParam ? {contains: genreParam, mode: 'insensitive'} : {}}
@@ -35,18 +39,19 @@ export async function GET( req: Request, { params }: { params: {bookId: string}}
 
 }
 
-export async function PATCH(req: Request, { params }: { params: {bookId: string}}) {
+export async function PATCH(req: Request, { params }: RouteContext) {
 
     try {
 
         const body = await req.json()
+        const { bookId } = await params
         const {title, author, genre} = body
     
-        if (!params.bookId) return new NextResponse("ID inválido", { status: 400 })
+        if (!bookId) return new NextResponse("ID inválido", { status: 400 })
         
         const book = await prismadb.book.update({
             where: {
-                id: params.bookId
+                id: bookId
             },
             data: {
                 title,
@@ -65,16 +70,17 @@ export async function PATCH(req: Request, { params }: { params: {bookId: string}
 
 }
 
-export async function DELETE(req: Request, { params }: { params: {bookId: string}}) {
+export async function DELETE(req: Request, { params }: RouteContext ) {
 
     try {
 
+        const { bookId } = await params
     
-        if (!params.bookId) return new NextResponse("ID inválido", { status: 400 })
+        if (!bookId) return new NextResponse("ID inválido", { status: 400 })
         
         const book = await prismadb.book.delete({
             where: {
-                id: params.bookId
+                id: bookId
             }
         })
 

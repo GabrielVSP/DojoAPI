@@ -5,13 +5,15 @@ import { NextResponse } from "next/server";
 
 const key: string = process.env.JWT as string
 
-export async function GET( req: Request, { params }: { params: { userEmail: string } }) {
+export async function GET( req: Request, { params }: { params: Promise<{ userEmail: string }> }) {
     
     try {
 
+        const { userEmail } = (await params)
+
         const user = await prismadb.user.findFirst({
             where: {
-                email: params.userEmail
+                email:userEmail
             },
             include: {
                 subscriptions: {
@@ -49,17 +51,18 @@ export async function GET( req: Request, { params }: { params: { userEmail: stri
 
 }
 
-export async function POST( req: Request, { params }: { params: { userEmail: string } } ) {
+export async function POST( req: Request, { params }: { params: Promise<{ userEmail: string }> } ) {
 
     try {
 
         const body = await req.json()
+        const { userEmail } = (await params)
         
         const {password} = body
 
         const user = await prismadb.user.findFirst({
             where: {
-                email: params.userEmail
+                email: userEmail
             }
         })
 
@@ -80,7 +83,7 @@ export async function POST( req: Request, { params }: { params: { userEmail: str
 
         await prismadb.user.updateMany({
             where: {
-                email: params.userEmail
+                email: userEmail
             },
             data: {
                 token
@@ -97,19 +100,20 @@ export async function POST( req: Request, { params }: { params: { userEmail: str
     
 }
 
-export async function PATCH( req: Request, { params }: { params: { userEmail: string } } ) {
+export async function PATCH( req: Request, { params }: { params: Promise<{ userEmail: string }> } ) {
 
     try {
 
+        const { userEmail } = (await params)
         const body = await req.json()
         
         const { subscriptions} = body
 
-        if(!params.userEmail) return new NextResponse("Email inválido.", { status: 400 })
+        if(!userEmail) return new NextResponse("Email inválido.", { status: 400 })
 
         const user = await prismadb.user.findFirst({
             where: {
-                email: params.userEmail
+                email: userEmail
             }
         })
 
@@ -121,7 +125,7 @@ export async function PATCH( req: Request, { params }: { params: { userEmail: st
 
         const patchedUser = await prismadb.user.update({
             where: {
-                email: params.userEmail
+                email: userEmail
             },
             data: {
                 subscriptions: {
