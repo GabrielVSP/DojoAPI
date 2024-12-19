@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import prismadb from "@/lib/prismadb";
 import { NextResponse } from "next/server";
 
@@ -23,11 +21,9 @@ export async function GET( req: Request) {
 
         return NextResponse.json(books)
 
-    } catch (e: any) {
+    } catch {
 
-        console.log("ERROR GET BOOKS -> " + e)
-
-        return new NextResponse(e, { status: 500})
+        return new NextResponse('Erro interno', { status: 500})
 
     }
 
