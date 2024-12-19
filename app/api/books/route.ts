@@ -21,7 +21,9 @@ export async function GET( req: Request) {
 
         return NextResponse.json(books)
 
-    } catch {
+    } catch (e) {
+
+        console.log("ERROR GET BOOKS -> " + e)
 
         return new NextResponse("Erro interno", { status: 500})
 
