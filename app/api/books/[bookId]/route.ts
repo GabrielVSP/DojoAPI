@@ -1,9 +1,8 @@
 import prismadb from "@/lib/prismadb";
 import { NextResponse } from "next/server";
 
-type RouteContext = { params: Promise<{ bookId: string }> }
 
-export async function GET( req: Request, { params }: RouteContext) {
+export async function GET( req: Request, { params }: { params: Promise<{ bookId: string }> }) {
  
     try {
 
@@ -39,7 +38,7 @@ export async function GET( req: Request, { params }: RouteContext) {
 
 }
 
-export async function PATCH(req: Request, { params }: RouteContext) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ bookId: string }> }) {
 
     try {
 
@@ -70,7 +69,7 @@ export async function PATCH(req: Request, { params }: RouteContext) {
 
 }
 
-export async function DELETE(req: Request, { params }: RouteContext ) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ bookId: string }> } ) {
 
     try {
 

@@ -11,7 +11,7 @@ export async function GET( req: Request, { params }: { params: Promise<{ userEma
     
     try {
 
-        const { userEmail } = (await params)
+        const { userEmail } = await params
 
         const user = await prismadb.user.findFirst({
             where: {
@@ -27,9 +27,14 @@ export async function GET( req: Request, { params }: { params: Promise<{ userEma
         })
 
         if(!user?.subscriptions) return new NextResponse("Usuário não assina nenhum livro", { status: 400})
+        let verify
 
+        try {
+            verify = jwt.verify(user.token, key)
+        } catch {
+            verify = false
+        }
 
-        const verify = jwt.verify(user.token, key)
         const subscriptions = user?.subscriptions.map((subs) => (subs.id))
 
         const notifications = await prismadb.queue.findMany({
@@ -45,9 +50,9 @@ export async function GET( req: Request, { params }: { params: Promise<{ userEma
             notifications: verify ? notifications.map((not) => (not.payload)) : ''
         })
 
-    } catch (e: any) {
+    } catch {
 
-        return new NextResponse(e, { status: 500})
+        return new NextResponse('Erro interno.', { status: 500})
 
     }
 
@@ -58,7 +63,7 @@ export async function POST( req: Request, { params }: { params: Promise<{ userEm
     try {
 
         const body = await req.json()
-        const { userEmail } = (await params)
+        const { userEmail } = await params
         
         const {password} = body
 
@@ -106,7 +111,7 @@ export async function PATCH( req: Request, { params }: { params: Promise<{ userE
 
     try {
 
-        const { userEmail } = (await params)
+        const { userEmail } = await params
         const body = await req.json()
         
         const { subscriptions} = body
