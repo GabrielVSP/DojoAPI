@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import prismadb from "@/lib/prismadb";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -13,9 +11,11 @@ export async function GET( req: Request, { params }: { params: Promise<{ userEma
 
         const { userEmail } = await params
 
+        if(!userEmail) return new NextResponse("Email inválido.", { status: 400 })
+
         const user = await prismadb.user.findFirst({
             where: {
-                email:userEmail
+                email: userEmail
             },
             include: {
                 subscriptions: {
@@ -26,28 +26,10 @@ export async function GET( req: Request, { params }: { params: Promise<{ userEma
             }
         })
 
-        if(!user?.subscriptions) return new NextResponse("Usuário não assina nenhum livro", { status: 400})
-        let verify
-
-        try {
-            verify = jwt.verify(user.token, key)
-        } catch {
-            verify = false
-        }
-
-        const subscriptions = user?.subscriptions.map((subs) => (subs.id))
-
-        const notifications = await prismadb.queue.findMany({
-            where: {
-                bookId: {
-                    in: subscriptions
-                }
-            }
-        })
+        
 
         return NextResponse.json({
             user,  
-            notifications: verify ? notifications.map((not) => (not.payload)) : ''
         })
 
     } catch {
@@ -97,7 +79,7 @@ export async function POST( req: Request, { params }: { params: Promise<{ userEm
             }
         })
 
-        return NextResponse.json("Usuário autenticado.")
+        return NextResponse.json("Usuário autenticado. Token de acesso => " + token)
 
     } catch {
 
@@ -112,11 +94,13 @@ export async function PATCH( req: Request, { params }: { params: Promise<{ userE
     try {
 
         const { userEmail } = await params
+        const auth = req.headers.get("Authorization");
         const body = await req.json()
         
         const { subscriptions} = body
 
         if(!userEmail) return new NextResponse("Email inválido.", { status: 400 })
+        if(!auth) return new NextResponse("Token não fornecido", { status: 401 })
 
         const user = await prismadb.user.findFirst({
             where: {
@@ -124,11 +108,13 @@ export async function PATCH( req: Request, { params }: { params: Promise<{ userE
             }
         })
 
-        if(!user?.token) return new NextResponse("Token de usuário inválido.", { status: 400 })
+        let verify
 
-        const verify = jwt.verify(user.token, key)
-
-        if(!verify) return new NextResponse("Usuário não autenticado no momento")
+        try {
+            verify = jwt.verify(auth, key) as { userId: string }
+        } catch {
+            return new NextResponse("Usuário não autenticado no momento", { status: 400 })
+        }
 
         const patchedUser = await prismadb.user.update({
             where: {
@@ -146,9 +132,9 @@ export async function PATCH( req: Request, { params }: { params: Promise<{ userE
 
         return NextResponse.json(patchedUser)
 
-    } catch {
+    } catch (e: any) {
 
-        return new NextResponse('Erro interno.', { status: 500})
+        return new NextResponse(e, { status: 500})
 
     }
     

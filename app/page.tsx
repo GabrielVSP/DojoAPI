@@ -143,7 +143,7 @@ export default function Home() {
         <div className="p-2 border border-gray-300 rounded-md my-2">
           <div className="flex items-center">
             <h3 className="px-1 text-md bg-teal-500 text-white w-fit rounded-md my-2 mr-3">PATCH</h3>
-            <p>Atualiza as inscrições do usuário(apenas quando autenticado).</p>
+            <p>Atualiza as inscrições do usuário(apenas quando autenticado, o token deve ser enviado como um header de autorização).</p>
           </div>
           <p className="font-bold rounded-sm px-1 bg-gray-200">{process.env.NEXT_PUBLIC_URL}users/[email]</p>
         </div>
@@ -158,6 +158,21 @@ export default function Home() {
         </div>
 
       </section> 
+
+      <section>
+
+        <h2 className="font-bold text-2xl my-3">Perfil</h2>
+
+        <div className="p-2 border border-gray-300 rounded-md my-2">
+          <div className="flex items-center">
+            <h3 className="px-1 text-md bg-green-500 text-white w-fit rounded-md my-2 mr-3">GET</h3>
+            <p>Retorna o perfil do usuário autenticado(O token deve ser enviado como um header de autorização).</p>
+          </div>
+          <p className="font-bold rounded-sm px-1 bg-gray-200">{process.env.NEXT_PUBLIC_URL}profile/</p>
+        </div>
+
+      </section> 
+
 
     </main>
   );
