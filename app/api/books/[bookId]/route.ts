@@ -10,18 +10,9 @@ export async function GET( req: Request, { params }: { params: Promise<{ bookId:
 
         if (!bookId) return new NextResponse("ID inválido", { status: 400 })
 
-        const url = new URL(req.url)
-
-        const authorParam = url.searchParams.get('author')
-        const genreParam = url.searchParams.get('genre')
-
         const book = await prismadb.book.findFirst({
             where: {
                 id: bookId,
-                OR: [
-                    {author: authorParam ? {contains: authorParam, mode: 'insensitive'} : {}},
-                    {genre: genreParam ? {contains: genreParam, mode: 'insensitive'} : {}}
-                ]
             },
             include: {
                 chapters: true
