@@ -1,6 +1,5 @@
 import prismadb from "@/lib/prismadb";
 import { NextResponse } from "next/server";
-import { Queue } from "bull";
 
 export async function GET( req: Request) {
     
@@ -62,9 +61,9 @@ export async function POST( req: Request) {
 
         return NextResponse.json(chapter)
 
-    } catch (e: any) {
+    } catch (e) {
 
-        return new NextResponse(e, { status: 500})
+        return new NextResponse('Erro interno.', { status: 500})
 
     }
     

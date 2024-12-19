@@ -2,7 +2,6 @@ import prismadb from "@/lib/prismadb";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
-import { json } from "stream/consumers";
 
 const key: string = process.env.JWT as string
 
@@ -136,9 +135,9 @@ export async function PATCH( req: Request, { params }: { params: { userEmail: st
 
         return NextResponse.json(patchedUser)
 
-    } catch (e: any) {
+    } catch (e) {
 
-        return new NextResponse(e, { status: 500})
+        return new NextResponse('Erro interno.', { status: 500})
 
     }
     
