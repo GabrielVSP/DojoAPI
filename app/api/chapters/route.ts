@@ -1,5 +1,6 @@
 import prismadb from "@/lib/prismadb";
 import { NextResponse } from "next/server";
+import { Queue } from "bull";
 
 export async function GET( req: Request) {
     
@@ -42,6 +43,20 @@ export async function POST( req: Request) {
                 title,
                 content,
                 bookId
+            }
+        })
+
+        const book = await prismadb.book.findFirst({
+            where: {
+                id: bookId
+            }
+        })
+
+        await prismadb.queue.create({
+            data: {
+                payload: `Novo capítulo de ${book?.title} adicionado!`,
+                bookId,
+                chapterId: chapter.id
             }
         })
 

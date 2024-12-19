@@ -1,8 +1,8 @@
 import prismadb from "@/lib/prismadb";
 import bcrypt from "bcrypt";
-import { connect } from "http2";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
+import { json } from "stream/consumers";
 
 const key: string = process.env.JWT as string
 
@@ -15,11 +15,32 @@ export async function GET( req: Request, { params }: { params: { userEmail: stri
                 email: params.userEmail
             },
             include: {
-                subscriptions: true
+                subscriptions: {
+                    select: {
+                        id: true
+                    }
+                }
             }
         })
 
-        return NextResponse.json(user)
+        if(!user?.subscriptions) return new NextResponse("Usuário não assina nenhum livro", { status: 400})
+
+
+        const verify = jwt.verify(user.token, key)
+        const subscriptions = user?.subscriptions.map((subs) => (subs.id))
+
+        const notifications = await prismadb.queue.findMany({
+            where: {
+                bookId: {
+                    in: subscriptions
+                }
+            }
+        })
+
+        return NextResponse.json({
+            user,  
+            notifications: verify ? notifications.map((not) => (not.payload)) : ''
+        })
 
     } catch (e) {
 

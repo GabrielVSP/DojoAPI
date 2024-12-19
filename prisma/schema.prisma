@@ -15,6 +15,7 @@ model Book {
   chapters   Chapter[]  @relation("BookToChapter")
   users      User[]       @relation("UserToBook")
   created_At DateTime   @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Chapter {
@@ -24,6 +25,7 @@ model Chapter {
   bookId     String
   book       Book       @relation("BookToChapter", fields: [bookId], references: [id])
   created_At DateTime   @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model User {
@@ -34,4 +36,14 @@ model User {
   subscriptions Book[]  @relation("UserToBook")
   token      String
   created_At DateTime   @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Queue {
+  id String @id @default(uuid())
+  bookId String
+  chapterId String
+  payload Json
+  created_At DateTime   @default(now())
+  updatedAt DateTime @updatedAt
 }

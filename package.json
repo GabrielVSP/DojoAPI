@@ -11,6 +11,8 @@
   "dependencies": {
     "@prisma/client": "^6.1.0",
     "bcrypt": "^5.1.1",
+    "bull": "^4.16.5",
+    "ioredis": "^5.4.1",
     "jsonwebtoken": "^9.0.2",
     "next": "15.1.1",
     "react": "^19.0.0",
