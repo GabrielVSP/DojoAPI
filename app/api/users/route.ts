@@ -2,7 +2,7 @@ import prismadb from "@/lib/prismadb";
 import bcrypt from "bcrypt"
 import { NextResponse } from "next/server";
 
-export async function GET( req: Request) {
+export async function GET() {
     
     try {
 
@@ -10,7 +10,7 @@ export async function GET( req: Request) {
 
         return NextResponse.json(users)
 
-    } catch (e) {
+    } catch {
 
         return new NextResponse("Erro interno", { status: 500})
 
@@ -55,7 +55,7 @@ export async function POST( req: Request) {
 
         return NextResponse.json(user)
 
-    } catch (e) {
+    } catch {
 
         return new NextResponse("Erro interno", { status: 500})
 

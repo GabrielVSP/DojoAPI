@@ -41,7 +41,7 @@ export async function GET( req: Request, { params }: { params: { userEmail: stri
             notifications: verify ? notifications.map((not) => (not.payload)) : ''
         })
 
-    } catch (e) {
+    } catch {
 
         return new NextResponse("Erro interno", { status: 500})
 
@@ -89,7 +89,7 @@ export async function POST( req: Request, { params }: { params: { userEmail: str
 
         return NextResponse.json("Usuário autenticado.")
 
-    } catch (e) {
+    } catch {
 
         return new NextResponse("Erro interno", { status: 500})
 
@@ -135,7 +135,7 @@ export async function PATCH( req: Request, { params }: { params: { userEmail: st
 
         return NextResponse.json(patchedUser)
 
-    } catch (e) {
+    } catch {
 
         return new NextResponse('Erro interno.', { status: 500})
 

@@ -21,7 +21,7 @@ export async function GET( req: Request) {
 
         return NextResponse.json(books)
 
-    } catch (e) {
+    } catch {
 
         return new NextResponse("Erro interno", { status: 500})
 
@@ -51,7 +51,7 @@ export async function POST( req: Request) {
 
         return NextResponse.json(book)
 
-    } catch (e) {
+    } catch {
 
         return new NextResponse("Erro interno", { status: 500})
 

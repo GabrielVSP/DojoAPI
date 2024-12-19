@@ -27,7 +27,7 @@ export async function GET( req: Request, { params }: { params: {bookId: string}}
 
         return NextResponse.json(book)
 
-    } catch (e) {
+    } catch {
 
         return new NextResponse("Erro interno", { status: 500})
 
@@ -57,7 +57,7 @@ export async function PATCH(req: Request, { params }: { params: {bookId: string}
 
         return NextResponse.json(book)
 
-    } catch (e) {
+    } catch {
 
         return new NextResponse("Erro interno", { status: 500})
 
@@ -80,7 +80,7 @@ export async function DELETE(req: Request, { params }: { params: {bookId: string
 
         return NextResponse.json(book)
 
-    } catch (e) {
+    } catch {
 
         return new NextResponse("Erro interno", { status: 500})
 
